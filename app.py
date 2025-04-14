@@ -1,52 +1,72 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template
 from datetime import datetime
+import matplotlib.pyplot as plt
+import io
+import base64
+import pandas as pd
 
 app = Flask(__name__)
 
 # Store all data, including Pilot & Dev
 data = {
     "timestamp": None,
-    "latitude": None,
-    "longitude": None,
-    "current_a0": None,
-    "voltage_a1": None,
-    "voltage_batt_mppt": None,
-    "current_batt_mppt": None,
-    "voltage_solar_mppt": None,
-    "power_solar_mppt": None,
-    "clouds": None,
-    "daytime": None,
-    "sunlight_score": None,
-    "weather_description": None,
-    "speed": None,
-    "range_without_sun": None,
-    "range_with_sun": None,
-    "run_time_left_no_sun": None,
-    "run_time_left_with_sun": None,
-    "battery_soc": None
+    "data": []  # List to store last 100 lines of CSV data
 }
 
 @app.route('/')
 def index_redirect():
-    return redirect(url_for('pilot'))
+    return render_template("index.html", mode="pilot", current_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), data=data)
 
 @app.route('/pilot')
 def pilot():
-    return render_template("index.html", mode="pilot", current_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), data=data)
+    latest_data = data["data"][-1] if data["data"] else {}
+    return render_template("index.html", mode="pilot", current_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), data=latest_data)
 
 @app.route('/dev')
 def dev():
-    # Check if data is valid and in the correct format
-    if not data:
-        return {"status": "error", "message": "No data available"}, 500
+    latest_data = data["data"][-1] if data["data"] else {}
+    
+    # Generate graphs for Developer Mode
+    if data["data"]:
+        df = pd.DataFrame(data["data"])
 
-    try:
-        return render_template("dev_mode.html", mode="dev", current_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), data=data)
-    except Exception as e:
-        return {"status": "error", "message": f"Error rendering template: {str(e)}"}, 500
+        # Plot the evolution of the state of charge (battery_soc), current A0, and speed
+        fig, ax = plt.subplots(3, 1, figsize=(10, 8))
 
+        # Plot Battery SOC
+        ax[0].plot(df['timestamp'], df['battery_soc'], label='State of Charge (%)', color='b')
+        ax[0].set_title('Battery State of Charge (SOC) Evolution')
+        ax[0].set_xlabel('Time')
+        ax[0].set_ylabel('SOC (%)')
 
+        # Plot Current A0
+        ax[1].plot(df['timestamp'], df['current_a0'], label='Current A0 (A)', color='r')
+        ax[1].set_title('Current A0 Evolution')
+        ax[1].set_xlabel('Time')
+        ax[1].set_ylabel('Current A0 (A)')
 
+        # Plot Speed
+        ax[2].plot(df['timestamp'], df['speed'], label='Speed (km/h)', color='g')
+        ax[2].set_title('Speed Evolution')
+        ax[2].set_xlabel('Time')
+        ax[2].set_ylabel('Speed (km/h)')
+
+        # Format the x-axis to avoid cluttering
+        for a in ax:
+            a.tick_params(axis='x', rotation=45)
+            a.legend()
+
+        # Save plot to a BytesIO object and encode it for HTML rendering
+        img = io.BytesIO()
+        plt.tight_layout()
+        plt.savefig(img, format='png')
+        img.seek(0)
+        graph_url = base64.b64encode(img.getvalue()).decode('utf-8')
+        
+    else:
+        graph_url = None
+
+    return render_template("dev_mode.html", mode="dev", current_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), data=latest_data, graph_url=graph_url)
 
 @app.route('/update', methods=['POST'])
 def update():
@@ -56,4 +76,4 @@ def update():
     return {"status": "ok"}, 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
