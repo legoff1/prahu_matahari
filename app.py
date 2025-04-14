@@ -36,7 +36,17 @@ def pilot():
 
 @app.route('/dev')
 def dev():
-    return render_template("index.html", mode="dev", current_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), data=data)
+    # Check if data is valid and in the correct format
+    if not data:
+        return {"status": "error", "message": "No data available"}, 500
+
+    try:
+        return render_template("dev_mode.html", mode="dev", current_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), data=data)
+    except Exception as e:
+        return {"status": "error", "message": f"Error rendering template: {str(e)}"}, 500
+
+
+
 
 @app.route('/update', methods=['POST'])
 def update():
