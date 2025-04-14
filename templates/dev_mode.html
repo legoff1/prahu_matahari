@@ -21,9 +21,23 @@
     <div class="card mb-4">
       <div class="card-body">
         <h5 class="section-title">📝 Raw Data</h5>
-        <pre>{{ data | tojson(indent=2) }}</pre> <!-- Display the raw data in JSON format -->
+        <pre>{{ data | tojson(indent=2) }}</pre>
       </div>
     </div>
+
+    <!-- Graph of the data -->
+    {% if graph_url %}
+    <div class="card mb-4">
+      <div class="card-body text-center">
+        <h5 class="card-title">📊 Data Evolution</h5>
+        <img src="data:image/png;base64,{{ graph_url }}" alt="Data Graph" class="img-fluid" />
+      </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning" role="alert">
+      No data available to plot.
+    </div>
+    {% endif %}
 
     <div class="text-center mb-4">
       <a href="{{ url_for('pilot') }}" class="btn btn-primary">Go to Pilot Mode</a>
