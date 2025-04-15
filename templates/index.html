@@ -113,14 +113,14 @@
 
   <!-- Leaflet Map Script -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  {% if data.latitude and data.longitude %}
+  {% if data["Latitude"] and data["Longitude"] %}
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      var map = L.map('map').setView([{{ data.latitude }}, {{ data.longitude }}], 17);
+      var map = L.map('map').setView([{{ data["Latitude"] }}, {{ data["Longitude"] }}], 17);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
-      L.marker([{{ data.latitude }}, {{ data.longitude }}]).addTo(map)
+      L.marker([{{  data["Latitude"] }}, {{ data["Longitude"] }}]).addTo(map)
         .bindPopup("Current Position")
         .openPopup();
     });
