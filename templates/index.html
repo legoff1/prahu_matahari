@@ -115,13 +115,15 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   {% if data.latitude and data.longitude %}
   <script>
-    var map = L.map('map').setView([{{ data.latitude }}, {{ data.longitude }}], 17);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-    L.marker([{{ data.latitude }}, {{ data.longitude }}]).addTo(map)
-      .bindPopup("Current Position")
-      .openPopup();
+    document.addEventListener("DOMContentLoaded", function () {
+      var map = L.map('map').setView([{{ data.latitude }}, {{ data.longitude }}], 17);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+      L.marker([{{ data.latitude }}, {{ data.longitude }}]).addTo(map)
+        .bindPopup("Current Position")
+        .openPopup();
+    });
   </script>
   {% endif %}
 </body>
