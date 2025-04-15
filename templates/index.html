@@ -66,7 +66,7 @@
     </div>
 
     <!-- Location Map -->
-    {% if data.latitude and data.longitude %}
+    {% if data["Latitude"] and data["Longitude"] %}
     <div class="card mb-4">
       <div class="card-body">
         <h5 class="card-title">📍 Location</h5>
@@ -86,7 +86,7 @@
 
         <p class="metric">
           <span class="icon" style="background-image: url('https://img.icons8.com/ios/50/speed.png');"></span>
-          <strong>Speed:</strong> {{ data.speed_kmph if data.speed_kmph else '—' }} km/h
+          <strong>Speed:</strong> {{ data["Speed_kmph"] if data["Speed_kmph"] else '—' }} km/h
         </p>
 
         <p class="metric">
