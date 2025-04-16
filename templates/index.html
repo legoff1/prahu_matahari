@@ -80,29 +80,58 @@
     <div class="card mb-4">
       <div class="card-body">
         <h5 class="section-title">
-          <span class="icon" style="background-image: url('https://img.icons8.com/ios/452/combo-chart.png');"></span>
-          Key Metrics
+          General
         </h5>
-
+        
         <p class="metric">
-          <span class="icon" style="background-image: url('https://img.icons8.com/ios/50/speed.png');"></span>
           <strong>Speed:</strong> {{ data["Speed_kmph"] if data["Speed_kmph"] else '—' }} km/h
         </p>
-
+        
         <p class="metric">
-          <span class="icon" style="background-image: url('https://img.icons8.com/ios-filled/50/battery-level.png');"></span>
           <strong>Battery SOC:</strong> {{ data["State_of_Charge (%)"] if data["State_of_Charge (%)"] else '—' }}%
         </p>
 
+        <h5 class="section-title">
+          No Sun
+        </h5>
+        
         <p class="metric">
-          <span class="icon" style="background-image: url('https://img.icons8.com/ios/50/distance.png');"></span>
-          <strong>Realistic Range (Forecast):</strong> {{ data["Realistic_range_with_forecast (km)"] if data["Realistic_range_with_forecast (km)"] else '—' }} km
+          <strong>Range:</strong> {{ data["Range_no_sun (km)"] if data["Range_no_sun (km)"] else '—' }} km
         </p>
 
         <p class="metric">
-          <span class="icon" style="background-image: url('https://img.icons8.com/ios/50/time.png');"></span>
-          <strong>Realistic Runtime (Forecast):</strong> {{ data["Realistic_runtime_with_forecast (h)"] if data["Realistic_runtime_with_forecast (h)"] else '—' }} h
+          <strong>Runtime:</strong> {{ data["Runtime_no_sun (h)"] if data["Runtime_no_sun (h)"] else '—' }} h
         </p>
+
+
+        <h5 class="section-title">
+          Optimistic
+        </h5>
+        
+        <p class="metric">
+          <strong>Range:</strong> {{ data["Optimistic_range_with_sun (km)"] if data["Optimistic_range_with_sun (km)"] else '—' }} km
+        </p>
+
+        <p class="metric">
+          <strong>Runtime:</strong> {{ data["Optimistic_runtime_with_sun (h)"] if data["Optimistic_runtime_with_sun (h)"] else '—' }} h
+        </p>
+
+
+        <h5 class="section-title">
+          Realistic
+        </h5>
+        
+        <p class="metric">
+          <strong>Range:</strong> {{ data["Realistic_range_with_forecast (km)"] if data["Realistic_range_with_forecast (km)"] else '—' }} km
+        </p>
+
+        <p class="metric">
+          <strong>Runtime:</strong> {{ data["Realistic_runtime_with_forecast (h)"] if data["Realistic_runtime_with_forecast (h)"] else '—' }} h
+        </p>
+
+
+
+        
       </div>
     </div>
     {% else %}
